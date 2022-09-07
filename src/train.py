@@ -20,7 +20,7 @@ def fine_tune(train_path:str, eval_path:str, baseline:str):
     tokenizer = AutoTokenizer.from_pretrained(baseline)
     tokenizer.pad_token = tokenizer.eos_token
     model = AutoModelForSequenceClassification.from_pretrained(baseline, num_labels=5)
-    model.config.pad_token_id = baseline.config.eos_token_id
+    model.config.pad_token_id = model.config.eos_token_id
 
     def tokenize_function(example):
         return tokenizer(example["text"], padding="max_length", max_length=128, truncation=True)
@@ -36,7 +36,7 @@ def fine_tune(train_path:str, eval_path:str, baseline:str):
     )
 
     trainer = Trainer(
-        model=baseline,
+        model=model,
         args=training_args,
         train_dataset=train_dataset,
         eval_dataset=eval_dataset,
