@@ -16,5 +16,5 @@ inputs:
     path: azureml:product-reviews-eval@latest
     type: uri_file
   baseline: 'gpt2'
-environment: azureml:base-hf-transformer-train:5
+environment: azureml:base-hf-transformer-trainer:1
 compute: azureml:gandalf
