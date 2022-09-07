@@ -10,11 +10,11 @@ command: >-
     --baseline ${{inputs.baseline}}
 inputs:
   train_path:
-    path: azureml:product-reviews-train:2
+    path: azureml:product-reviews-train@latest
   eval_path:
-    path: azureml:product-reviews-eval:2
+    path: azureml:product-reviews-eval@latest
   baseline: 'gpt2'
 environment:
-  build:
-    path: docker-context
-compute: azureml:santiagxf-gpu-xl
+  image: mcr.microsoft.com/azureml/curated/acpt-pytorch-1.11-py38-cuda11.5-gpu:1
+  conda_file: conda.yml
+compute: azureml:gandalf

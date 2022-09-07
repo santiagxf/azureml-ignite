@@ -1,4 +1,4 @@
 $schema: https://azuremlschemas.azureedge.net/latest/data.schema.json
 name: product-reviews-eval
 type: uri_file
-path: azureml://datastores/amldatalake_trusted/paths/datasets/products-review/dev/dev.csv
+path: azureml://datastores/datasets/paths/datasets/products-review/dev/dev.csv
