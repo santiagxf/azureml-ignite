@@ -32,20 +32,20 @@ def fine_tune(train_path:str, eval_path:str, baseline:str, ptca:bool = False, de
     train_dataset = train_input.map(tokenize_function, batched=True)
     eval_dataset = eval_input.map(tokenize_function, batched=True)
 
-    training_args = TrainingArguments(
-        output_dir='./results',
-        logging_dir='./logs', 
-        report_to = 'none',
-        num_train_epochs=3,
-    )
+    training_args_dict = {
+        'output_dir': './results',
+        'logging_dir': './logs', 
+        'report_to': 'none',
+        'num_train_epochs': 3,
+    }
 
     if ptca:
-        training_args["report_to"] = "azure_ml"
         training_args["ort"] = False
         training_args["fp16"] = True
         if deepspeed:
             training_args["deepspeed"] = "ds_config_zero_1.json"
 
+    training_args = TrainingArguments(**training_args_dict)
     trainer = Trainer(
         model=model,
         args=training_args,
