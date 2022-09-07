@@ -7,7 +7,9 @@ command: >-
   jobtools train.py fine_tune \
     --train-path ${{inputs.train_path}} \
     --eval-path ${{inputs.eval_path}} \
-    --baseline ${{inputs.baseline}}
+    --baseline ${{inputs.baseline}} \
+    --ptca ${{inputs.ptca}} \
+    --deepspeed ${{inputs.deepspeed}}
 inputs:
   train_path:
     path: azureml:product-reviews-train@latest
@@ -16,7 +18,7 @@ inputs:
     path: azureml:product-reviews-eval@latest
     type: uri_file
   baseline: 'gpt2'
-environment:
-  image: mcr.microsoft.com/azureml/curated/acpt-pytorch-1.11-py38-cuda11.5-gpu:1
-  conda_file: conda.yml
+  ptca: True
+  deepspeed: True
+environment: azureml:ptca-hf-transformer-trainer:1
 compute: azureml:gandalf
