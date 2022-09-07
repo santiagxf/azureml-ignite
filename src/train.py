@@ -60,7 +60,7 @@ def fine_tune(train_path:str, eval_path:str, baseline:str, ort:bool = False, dee
     evaluation_metrics = trainer.evaluate()
 
     mlflow.log_metrics(dict(filter(lambda item: item[1] is not None, evaluation_metrics.items())))
-    mlflow.log_params(history.metrics)
+    mlflow.log_params(training_args_dict)
 
     tokenizer.save_pretrained(model_output)
     model.save_pretrained(model_output)
