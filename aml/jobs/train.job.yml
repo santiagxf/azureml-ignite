@@ -6,7 +6,7 @@ code: ../../src
 command: >-
   jobtools train.py fine_tune \
     --train-path ${{inputs.train_path}}
-    --test-path ${{inputs.test_path}}
+    --eval-path ${{inputs.eval_path}}
     --baseline ${{inputs.baseline}}
 inputs:
   train_path:
