@@ -5,14 +5,16 @@ description: Fine tunning of the gpt2 model.
 code: ../../src
 command: >-
   jobtools train.py fine_tune \
-    --train-path ${{inputs.train_path}}
-    --eval-path ${{inputs.eval_path}}
-    --baseline ${{inputs.baseline}}
+    --train-path ${{inputs.train_path}} \
+    --eval-path ${{inputs.eval_path}} \
+    --baseline ${{inputs.baseline}} \
 inputs:
   train_path:
     path: azureml:product-reviews-train@latest
+    type: uri_file
   eval_path:
     path: azureml:product-reviews-eval@latest
+    type: uri_file
   baseline: 'gpt2'
 environment:
   build:
