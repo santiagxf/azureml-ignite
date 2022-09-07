@@ -1,5 +1,5 @@
 $schema: https://azuremlschemas.azureedge.net/latest/commandJob.schema.json
-display_name: product-reviews-gpt2
+display_name: product-reviews-gpt2-deepspeed
 experiment_name: product-reviews-nlp
 description: Fine tunning of the gpt2 model.
 code: ../../src
