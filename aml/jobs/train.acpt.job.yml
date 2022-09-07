@@ -3,6 +3,9 @@ display_name: product-reviews-gpt2-deepspeed
 experiment_name: product-reviews-nlp
 description: Fine tunning of the gpt2 model.
 code: ../../src
+distribution:
+  type: pytorch
+  process_count_per_instance: 4
 command: >-
   jobtools train.py fine_tune \
     --train-path ${{inputs.train_path}} \
