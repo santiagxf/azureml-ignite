@@ -8,7 +8,7 @@ command: >-
     --train-path ${{inputs.train_path}} \
     --eval-path ${{inputs.eval_path}} \
     --baseline ${{inputs.baseline}} \
-    --ptca ${{inputs.ptca}} \
+    --ort ${{inputs.ort}} \
     --deepspeed ${{inputs.deepspeed}}
 inputs:
   train_path:
@@ -18,7 +18,7 @@ inputs:
     path: azureml:product-reviews-eval@latest
     type: uri_file
   baseline: 'gpt2'
-  ptca: True
+  ort: True
   deepspeed: True
 environment: azureml:ptca-hf-transformer-trainer:1
 compute: azureml:gandalf

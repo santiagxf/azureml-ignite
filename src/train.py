@@ -1,3 +1,4 @@
+import logging
 import transformers
 import datasets
 import mlflow
@@ -16,7 +17,7 @@ def create_dataset(data_path:str):
     
     return Dataset.from_csv(data_path, features=features)
 
-def fine_tune(train_path:str, eval_path:str, baseline:str, ptca:bool = False, deepspeed: bool = False):
+def fine_tune(train_path:str, eval_path:str, baseline:str, ort:bool = False, deepspeed: bool = False):
     train_input = create_dataset(train_path)
     eval_input = create_dataset(eval_path)
     model_output = './outputs'
@@ -39,11 +40,13 @@ def fine_tune(train_path:str, eval_path:str, baseline:str, ptca:bool = False, de
         'num_train_epochs': 3,
     }
 
-    if ptca:
-        training_args_dict["ort"] = False
+    if ort:
+        logging.info('Enabling ORT for training')
+        training_args_dict["ort"] = True
         training_args_dict["fp16"] = True
-        if deepspeed:
-            training_args_dict["deepspeed"] = "ds_config_zero_1.json"
+    if deepspeed:
+        logging.info('Enabling deepspeed configuration with paramters ds_config_zero_1.json')
+        training_args_dict["deepspeed"] = "ds_config_zero_1.json"
 
     training_args = TrainingArguments(**training_args_dict)
     trainer = Trainer(
