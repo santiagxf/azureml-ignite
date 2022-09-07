@@ -40,10 +40,10 @@ def fine_tune(train_path:str, eval_path:str, baseline:str, ptca:bool = False, de
     }
 
     if ptca:
-        training_args["ort"] = False
-        training_args["fp16"] = True
+        training_args_dict["ort"] = False
+        training_args_dict["fp16"] = True
         if deepspeed:
-            training_args["deepspeed"] = "ds_config_zero_1.json"
+            training_args_dict["deepspeed"] = "ds_config_zero_1.json"
 
     training_args = TrainingArguments(**training_args_dict)
     trainer = Trainer(
