@@ -1,0 +1,16 @@
+channels:
+  - defaults
+  - conda-forge
+dependencies:
+  - python=3.8.5
+  - pip=20.3.4
+  - pip:
+    - jobtools
+    - transformers
+    - datasets
+    - tqdm
+    - torch
+    - pandas
+    - numpy
+    - mlflow
+    - azureml-mlflow

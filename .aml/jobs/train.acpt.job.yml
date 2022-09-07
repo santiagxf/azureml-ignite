@@ -1,0 +1,20 @@
+$schema: https://azuremlschemas.azureedge.net/latest/commandJob.schema.json
+display_name: product-reviews-gpt2
+experiment_name: product-reviews-nlp
+description: Fine tunning of the gpt2 model.
+code: ../../src
+command: >-
+  jobtools train.py fine_tune \
+    --train-path ${{inputs.train_path}}
+    --test-path ${{inputs.test_path}}
+    --baseline ${{inputs.baseline}}
+inputs:
+  train_path:
+    path: azureml:product-reviews-train:2
+  eval_path:
+    path: azureml:product-reviews-eval:2
+  baseline: 'gpt2'
+environment:
+  image: mcr.microsoft.com/azureml/curated/acpt-pytorch-1.11-py38-cuda11.5-gpu:1
+  conda_file: conda.yml
+compute: azureml:santiagxf-gpu-xl
