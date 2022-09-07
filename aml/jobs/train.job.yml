@@ -7,7 +7,7 @@ command: >-
   jobtools train.py fine_tune \
     --train-path ${{inputs.train_path}} \
     --eval-path ${{inputs.eval_path}} \
-    --baseline ${{inputs.baseline}} \
+    --baseline ${{inputs.baseline}}
 inputs:
   train_path:
     path: azureml:product-reviews-train@latest
@@ -19,4 +19,4 @@ inputs:
 environment:
   build:
     path: docker-context
-compute: azureml:santiagxf-gpu-xl
+compute: azureml:gandalf
