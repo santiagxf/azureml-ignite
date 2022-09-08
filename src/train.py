@@ -1,4 +1,5 @@
 import logging
+import os
 import transformers
 import datasets
 import mlflow
@@ -22,6 +23,12 @@ def fine_tune(train_path:str, eval_path:str, baseline:str, ort:bool = False, dee
     eval_input = create_dataset(eval_path)
     model_output = './outputs'
 
+    if 'RANK' in os.environ.keys():
+        rank = os.environ['RANK']
+        print(f"[DEBUG] RANK = {rank}")
+    else:
+        rank = -1
+
     tokenizer = AutoTokenizer.from_pretrained(baseline)
     tokenizer.pad_token = tokenizer.eos_token
     model = AutoModelForSequenceClassification.from_pretrained(baseline, num_labels=5)
@@ -41,11 +48,11 @@ def fine_tune(train_path:str, eval_path:str, baseline:str, ort:bool = False, dee
     }
 
     if ort:
-        logging.info('Enabling ORT for training')
+        print('Enabling ORT for training')
         training_args_dict["ort"] = True
         training_args_dict["fp16"] = True
     if deepspeed:
-        logging.info('Enabling deepspeed configuration with paramters ds_config_zero_1.json')
+        print('Enabling deepspeed configuration with paramters ds_config_zero_1.json')
         training_args_dict["deepspeed"] = "ds_config_zero_1.json"
 
     training_args = TrainingArguments(**training_args_dict)
@@ -74,8 +81,9 @@ def fine_tune(train_path:str, eval_path:str, baseline:str, ort:bool = False, dee
             ColSpec(DataType.double, "confidence"),
         ]))
 
-    mlflow.pyfunc.log_model("classifier", 
-                            data_path=model_output, 
-                            code_path=["./hg_loader_module.py"], 
-                            loader_module="hg_loader_module", 
-                            signature=signature)
+    if rank <= 0:
+        mlflow.pyfunc.log_model("classifier", 
+                                data_path=model_output, 
+                                code_path=["./hg_loader_module.py"], 
+                                loader_module="hg_loader_module", 
+                                signature=signature)
