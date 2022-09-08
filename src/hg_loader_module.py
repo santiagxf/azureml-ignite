@@ -1,10 +1,9 @@
-from os import truncate
-from transformers.models.auto.tokenization_auto import AutoTokenizer
-from transformers.models.auto import AutoModelForSequenceClassification
-
 import logging
 import torch
 import pandas as pd
+
+from transformers.models.auto.tokenization_auto import AutoTokenizer
+from transformers.models.auto import AutoModelForSequenceClassification
 
 class HuggingFaceClassifierModel:
     def __init__(self, baseline: str, tokenizer: str = None):
@@ -34,6 +33,6 @@ class HuggingFaceClassifierModel:
 
         return results
 
-    def _load_pyfunc(path):
-        import os
-        return HuggingFaceClassifierModel(os.path.abspath(path))
+def _load_pyfunc(path):
+    import os
+    return HuggingFaceClassifierModel(os.path.abspath(path))
