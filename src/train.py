@@ -24,7 +24,7 @@ def fine_tune(train_path:str, eval_path:str, baseline:str, ort:bool = False, dee
     model_output = './outputs'
 
     if 'RANK' in os.environ.keys():
-        rank = os.environ['RANK']
+        rank = int(os.environ['RANK'])
         print(f"[DEBUG] RANK = {rank}")
     else:
         rank = -1
