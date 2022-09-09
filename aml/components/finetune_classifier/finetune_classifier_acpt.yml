@@ -1,0 +1,84 @@
+name: finetuning_classifier_acpt
+display_name: Finetune HuggingFace Classifier (DeepSpeed)
+version: 1
+type: command
+description: Finetune a HuggingFace Classifier with acceleration support.
+tags: { category: HuggingFace, type: Classifier }
+inputs:
+  weights_path: 
+    type: uri_folder
+    description: The model checkpoint for weights initialization.
+  tokenizer_path:
+    type: uri_folder
+    description: Pretrained tokenizer name or path if not from model_name.
+  config_path: 
+    type: uri_folder
+    description: Pretrained GPT2 model configuration.
+  train_path: 
+    type: uri_folder
+    description: Directory containing pre-processed training data.
+  validation_path: 
+    type: uri_folder
+    description: Directory containing pre-processed validation data.
+    default: Empty
+  text_column_name: 
+    type: string
+    description: Name of the column containing text.
+    default: text
+  label_column_name: 
+    type: string
+    description: Name of the column containing text.
+    default: label
+  num_labels: 
+    type: integer
+    description: Number of labels/classes in the target.
+  batch_size: 
+    type: integer
+    description: Batch size per step on each device.
+    default: 26
+  num_train_epochs: 
+    type: integer
+    description: Number of training epochs.
+    default: 20
+  fp16: 
+    type: boolean
+    description: Use mixed precision.
+    default: true
+  ort: 
+    type: boolean
+    description: Use ORTModule.
+    default: true
+  deepspeed: 
+    type: boolean
+    description: Use deepspeed.
+    default: true
+outputs:
+  model_output:
+    type: uri_folder
+  tokenizer_output:
+    type: uri_folder
+  weights_output:
+    type: uri_folder
+code: .
+environment: azureml:ptca-hf-transformer-trainer:1
+distribution:
+  type: pytorch
+  process_count_per_instance: 4
+command: >-
+  jobtools finetune_classifier.py finetune
+  --weights_path ${{inputs.weights_path}} 
+  --tokenizer_path ${{inputs.tokenizer_path}}
+  --config_path ${{inputs.config_path}}
+  --train_path ${{inputs.train_path}} 
+  --validation_path ${{inputs.validation_path}} 
+  --text_column_name ${{inputs.text_column_name}}
+  --label_column_name ${{inputs.label_column_name}}
+  --num_labels ${{inputs.num_labels}}
+  --batch_size ${{inputs.batch_size}}
+  --num_train_epochs ${{inputs.num_train_epochs}}
+  --ort ${{inputs.ort}}
+  --fp16 ${{inputs.fp16}}
+  --deepspeed ${{inputs.deepspeed}}
+  --model_output ${{outputs.model_output}}
+  --weights_output ${{outputs.weights_output}}
+  --tokenizer_output ${{outputs.tokenizer_output}} 

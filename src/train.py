@@ -1,5 +1,6 @@
 import logging
 import os
+import tempfile
 import transformers
 import datasets
 import mlflow
@@ -82,8 +83,14 @@ def fine_tune(train_path:str, eval_path:str, baseline:str, ort:bool = False, dee
         ]))
 
     if rank <= 0:
-        mlflow.pyfunc.log_model("classifier", 
-                                data_path=model_output, 
-                                code_path=["./hg_loader_module.py"], 
-                                loader_module="hg_loader_module", 
-                                signature=signature)
+        finetuned_dir = tempfile.mkdtemp()
+        tokenizer.save_pretrained(finetuned_dir)
+        model.save_pretrained(finetuned_dir)
+
+        mlflow_model_path = os.path.join(model_output, 'classifier')
+        os.mkdir(mlflow_model_path)
+        mlflow.pyfunc.save_model(mlflow_model_path, 
+                                 data_path=finetuned_dir, 
+                                 code_path=["./hg_loader_module.py"], 
+                                 loader_module="hg_loader_module", 
+                                 signature=signature)
