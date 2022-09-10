@@ -1,7 +1,6 @@
 import logging
 import mlflow
 import os
-import tempfile
 import numpy as np
 from mlflow.models.signature import ModelSignature
 from mlflow.types.schema import Schema, ColSpec
@@ -13,8 +12,8 @@ from transformers import Trainer, TrainingArguments, default_data_collator
 
 eval_metric = load_metric('accuracy')
 
-def load_raw_dataset(train_path, validation_path, label_column_name, 
-                     text_column_name, cache_dir=".cache"):
+def load_raw_dataset(train_path, validation_path, text_column_name, 
+                     label_column_name, cache_dir=".cache"):
 
     if os.path.isdir(train_path):
         print('is path')
