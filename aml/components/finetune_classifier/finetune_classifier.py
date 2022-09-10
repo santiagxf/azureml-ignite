@@ -17,8 +17,10 @@ def load_raw_dataset(train_path, validation_path, label_column_name,
                      text_column_name, cache_dir=".cache"):
 
     if os.path.isdir(train_path):
+        print('is path')
         train_path = os.path.join(train_path, "*.csv")
     if os.path.isdir(validation_path):
+        print('is path')
         validation_path = os.path.join(validation_path, "*.csv")
 
     data_files = {}
