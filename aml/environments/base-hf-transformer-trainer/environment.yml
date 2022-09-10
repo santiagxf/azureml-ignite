@@ -1,4 +1,4 @@
 $schema: https://azuremlschemas.azureedge.net/latest/environment.schema.json
 name: base-hf-transformer-trainer
 build:
-  path: docker-contexts
+  path: docker-context
