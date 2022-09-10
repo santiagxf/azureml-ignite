@@ -19,4 +19,8 @@ outputs:
 code: huggingface.py
 environment: azureml:base-hf-transformer-trainer:1
 command: >-
-  jobtools huggingface.py get_model --model-name ${{inputs.model_name}} --config-output ${{outputs.config}} --tokenizer-output ${{outputs.tokenizer}} --weights-output ${{outputs.weights}}
+  jobtools huggingface.py get_model 
+    --model-name ${{inputs.model_name}} 
+    --config-output ${{outputs.config}} 
+    --tokenizer-output ${{outputs.tokenizer}} 
+    --weights-output ${{outputs.weights}}

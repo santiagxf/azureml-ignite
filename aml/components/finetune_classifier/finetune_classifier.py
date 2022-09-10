@@ -75,11 +75,12 @@ def finetune(weights_path: str, tokenizer_path: str, config_path: str,
 
     logging.info("[DEBUG] Loading base model, config and tokenizer")
     config = AutoConfig.from_pretrained(config_path)
+    config.num_labels = num_labels
 
     tokenizer = AutoTokenizer.from_pretrained(tokenizer_path)
     tokenizer.pad_token = tokenizer.eos_token
 
-    model = AutoModelForSequenceClassification.from_pretrained(weights_path, num_labels=num_labels, config=config)
+    model = AutoModelForSequenceClassification.from_pretrained(weights_path, config=config)
     model.config.pad_token_id = model.config.eos_token_id
     model.resize_token_embeddings(len(tokenizer))
 
