@@ -47,7 +47,7 @@ def finetune(weights_path: str, tokenizer_path: str, config_path: str,
              train_path: str, validation_path: str, 
              text_column_name: str, label_column_name: str, num_labels: int,
              batch_size: int, num_train_epochs: int, 
-             model_output: str, weights_output: str, tokenizer_output: str,
+             weights_output: str, tokenizer_output: str, config_output: str,
              ort: bool = False, fp16: bool = False, deepspeed: bool = False):
 
     # get raw datasets
@@ -104,7 +104,7 @@ def finetune(weights_path: str, tokenizer_path: str, config_path: str,
     mlflow.log_params(training_args_dict)
 
     tokenizer.save_pretrained(tokenizer_output)
-    model.save_pretrained(weights_path)
+    model.save_pretrained(weights_output)
 
     if log_model:
         logging.info('[DEBUG] Logging MLflow model')
@@ -121,8 +121,8 @@ def finetune(weights_path: str, tokenizer_path: str, config_path: str,
                 ColSpec(DataType.double, "confidence"),
             ]))
 
-        mlflow.pyfunc.save_model(os.path.join(model_output, 'classifier'), 
-                                 data_path=finetuned_dir,
-                                 code_path=["./hg_loader_module.py"], 
-                                 loader_module="hg_loader_module", 
-                                 signature=signature)
+        mlflow.pyfunc.log_model('model', 
+                                data_path=finetuned_dir,
+                                code_path=["./hg_loader_module.py"], 
+                                loader_module="hg_loader_module", 
+                                signature=signature)

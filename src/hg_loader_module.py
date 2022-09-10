@@ -16,7 +16,7 @@ class HuggingFaceClassifierModel:
         if isinstance(data, pd.DataFrame):
             data = data['text']
     
-        inputs = self.tokenizer(list(data), padding=True, truncate=True, return_tensors='pt')
+        inputs = self.tokenizer(list(data), padding=True, truncation=True, return_tensors='pt')
         predictions = self.model(**inputs)
         probs = torch.nn.Softmax(dim=1)(predictions.logits)
         probs = probs.detach().numpy()
