@@ -121,7 +121,7 @@ def finetune(weights_path: str, tokenizer_path: str, config_path: str,
                 ColSpec(DataType.double, "confidence"),
             ]))
 
-        mlflow.pyfunc.save_model(model_output, 
+        mlflow.pyfunc.save_model(os.path.join(model_output, 'classifier'), 
                                  data_path=finetuned_dir,
                                  code_path=["./hg_loader_module.py"], 
                                  loader_module="hg_loader_module", 
