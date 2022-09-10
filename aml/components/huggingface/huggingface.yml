@@ -1,6 +1,6 @@
 name: hf_transformer_models
 display_name: HuggingFace Transformer Model
-version: 1
+version: 4
 type: command
 description: This component downloads the current HuggingFace Transformer models for consumption in downstream tasks.
 tags: {category: HuggingFace, type: Models }
@@ -19,8 +19,4 @@ outputs:
 code: huggingface.py
 environment: azureml:base-hf-transformer-trainer:1
 command: >-
-  jobtools huggingface.py get_model
-  --model_name ${{inputs.model_name}} 
-  --weights_output ${{outputs.weights}}
-  --tokenizer_output ${{outputs.tokenizer}}
-  --config_output ${{outputs.config}}
+  jobtools huggingface.py get_model --model-name ${{inputs.model_name}} --config-output ${{outputs.config}} --tokenizer-output ${{outputs.tokenizer}} --weights-output ${{outputs.weights}}

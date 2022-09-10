@@ -2,19 +2,28 @@ import logging
 import mlflow
 import os
 import tempfile
+import numpy as np
 from mlflow.models.signature import ModelSignature
 from mlflow.types.schema import Schema, ColSpec
 from mlflow.types import DataType
 from datasets.arrow_dataset import Dataset, Features, Value
+from datasets import load_metric
 from transformers import AutoConfig, AutoTokenizer, AutoModelForSequenceClassification
 from transformers import Trainer, TrainingArguments, default_data_collator
 
+eval_metric = load_metric('accuracy')
 
-def load_raw_dataset(train_file, validation_file, label_column_name, 
+def load_raw_dataset(train_path, validation_path, label_column_name, 
                      text_column_name, cache_dir=".cache"):
+
+    if os.path.isdir(train_path):
+        train_path = os.path.join(train_path, "*.csv")
+    if os.path.isdir(validation_path):
+        validation_path = os.path.join(validation_path, "*.csv")
+
     data_files = {}
-    data_files["train"] = train_file
-    data_files["validation"] = validation_file
+    data_files["train"] = train_path
+    data_files["validation"] = validation_path
 
     feature_mappings = {label_column_name: "int32", text_column_name: "string"}
     features = (
@@ -43,17 +52,27 @@ def tokenize_and_batch_datasets(tokenizer, raw_datasets, text_column_name):
     return train_dataset, eval_dataset
 
 
+def compute_metrics(eval_pred):
+    predictions, labels = eval_pred
+    predictions = np.argmax(predictions, axis=1)
+    return eval_metric.compute(predictions=predictions, references=labels)
+
+
 def finetune(weights_path: str, tokenizer_path: str, config_path: str, 
              train_path: str, validation_path: str, 
              text_column_name: str, label_column_name: str, num_labels: int,
-             batch_size: int, num_train_epochs: int, 
+             batch_size: int, num_train_epochs: int, model_output: str,
              weights_output: str, tokenizer_output: str, config_output: str,
              ort: bool = False, fp16: bool = False, deepspeed: bool = False):
 
-    # get raw datasets
+    if validation_path == None:
+        logging.warning("[WARN] No evaluation dataset has been provided. Using training data for evaluation")
+        validation_path = train_dataset
+
+    logging.info("[DEBUG] Reading datasets from inputs")
     raw_datasets = load_raw_dataset(train_path, validation_path, text_column_name, label_column_name)
 
-    # Load pretrained config, model, and tokenizer
+    logging.info("[DEBUG] Loading base model, config and tokenizer")
     config = AutoConfig.from_pretrained(config_path)
 
     tokenizer = AutoTokenizer.from_pretrained(tokenizer_path)
@@ -73,11 +92,12 @@ def finetune(weights_path: str, tokenizer_path: str, config_path: str,
         'report_to': 'none',
         'num_train_epochs': num_train_epochs,
         "per_device_train_batch_size" : batch_size,
+        "evaluation_strategy": "epoch",
     }
 
     log_model = True
     if ort or fp16:
-        logging.info('[DEBUG] Enabling ORT for training')
+        logging.info('[DEBUG] Enabling ORT module for training')
         training_args_dict["ort"] = ort
         training_args_dict["fp16"] = fp16
     if deepspeed:
@@ -94,7 +114,8 @@ def finetune(weights_path: str, tokenizer_path: str, config_path: str,
         args=training_args,
         train_dataset=train_dataset,
         eval_dataset=eval_dataset,
-        data_collator=default_data_collator
+        data_collator=default_data_collator,
+        compute_metrics=compute_metrics
     )
 
     history = trainer.train()
@@ -105,12 +126,12 @@ def finetune(weights_path: str, tokenizer_path: str, config_path: str,
 
     tokenizer.save_pretrained(tokenizer_output)
     model.save_pretrained(weights_output)
+    config.save_pretrained(config_output)
 
     if log_model:
         logging.info('[DEBUG] Logging MLflow model')
-        finetuned_dir = tempfile.mkdtemp()
-        tokenizer.save_pretrained(finetuned_dir)
-        model.save_pretrained(finetuned_dir)
+        tokenizer.save_pretrained(model_output)
+        model.save_pretrained(model_output)
 
         signature = ModelSignature(
             inputs=Schema([
@@ -122,7 +143,7 @@ def finetune(weights_path: str, tokenizer_path: str, config_path: str,
             ]))
 
         mlflow.pyfunc.log_model('model', 
-                                data_path=finetuned_dir,
+                                data_path=model_output,
                                 code_path=["./hg_loader_module.py"], 
                                 loader_module="hg_loader_module", 
                                 signature=signature)

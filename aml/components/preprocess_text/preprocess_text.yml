@@ -27,9 +27,9 @@ code: preprocess_text.py
 environment: azureml:base-hf-transformer-trainer:1
 command: >-
   jobtools preprocess_text.py preprocess
-  --input_dataset ${{inputs.input_dataset}}
-  --text_column_name ${{inputs.text_column_name}}
-  --split_sentences ${{inputs.split_sentences}}
-  --unique_words ${{inputs.unique_words}}
-  --max_sentence_len ${{inputs.max_sentence_len}}
-  --output_dataset ${{outputs.output_dataset}}
+  --input-dataset ${{inputs.input_dataset}}
+  --text-column-name ${{inputs.text_column_name}}
+  --split-sentences ${{inputs.split_sentences}}
+  --unique-words ${{inputs.unique_words}}
+  --max-sentence-len ${{inputs.max_sentence_len}}
+  --output-dataset ${{outputs.output_dataset}}

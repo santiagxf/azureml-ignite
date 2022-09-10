@@ -1,17 +1,17 @@
 name: finetuning_classifier_base
 display_name: Finetune HuggingFace Classifier
-version: 1
+version: 7
 type: command
 description: Finetune a HuggingFace Classifier.
 tags: { category: HuggingFace, type: Classifier }
 inputs:
-  weights_path: 
+  base_weights: 
     type: uri_folder
     description: The model checkpoint for weights initialization.
-  tokenizer_path:
+  base_tokenizer:
     type: uri_folder
     description: Pretrained tokenizer name or path if not from model_name.
-  config_path: 
+  base_config: 
     type: uri_folder
     description: Pretrained GPT2 model configuration.
   train_path: 
@@ -20,7 +20,6 @@ inputs:
   validation_path: 
     type: uri_folder
     description: Directory containing pre-processed validation data.
-    default: Empty
   text_column_name: 
     type: string
     description: Name of the column containing text.
@@ -40,42 +39,16 @@ inputs:
     type: integer
     description: Number of training epochs.
     default: 20
-  fp16: 
-    type: boolean
-    description: Use mixed precision.
-    default: true
-  ort: 
-    type: boolean
-    description: Use ORTModule.
-    default: true
-  deepspeed: 
-    type: boolean
-    description: Use deepspeed.
-    default: true
 outputs:
-  model_output:
+  weights:
     type: uri_folder
-  tokenizer_output:
+  tokenizer:
     type: uri_folder
-  weights_output:
+  config:
+    type: uri_folder
+  model:
     type: uri_folder
 code: .
 environment: azureml:base-hf-transformer-trainer:1
 command: >-
-  jobtools finetune_classifier.py finetune
-  --weights_path ${{inputs.weights_path}} 
-  --tokenizer_path ${{inputs.tokenizer_path}}
-  --config_path ${{inputs.config_path}}
-  --train_path ${{inputs.train_path}} 
-  --validation_path ${{inputs.validation_path}} 
-  --text_column_name ${{inputs.text_column_name}}
-  --label_column_name ${{inputs.label_column_name}}
-  --num_labels ${{inputs.num_labels}}
-  --batch_size ${{inputs.batch_size}}
-  --num_train_epochs ${{inputs.num_train_epochs}}
-  --ort ${{inputs.ort}}
-  --fp16 ${{inputs.fp16}}
-  --deepspeed ${{inputs.deepspeed}}
-  --model_output ${{outputs.model_output}}
-  --weights_output ${{outputs.weights_output}}
-  --tokenizer_output ${{outputs.tokenizer_output}} 
+  jobtools finetune_classifier.py finetune --weights-path ${{inputs.base_weights}} --tokenizer-path ${{inputs.base_tokenizer}} --config-path ${{inputs.base_config}} --train-path ${{inputs.train_path}} --validation-path ${{inputs.validation_path}} --text-column-name ${{inputs.text_column_name}} --label-column-name ${{inputs.label_column_name}} --num-labels ${{inputs.num_labels}} --batch-size ${{inputs.batch_size}} --num-train-epochs ${{inputs.num_train_epochs}} --ort False --fp16 False --deepspeed False --model-output ${{outputs.model}} --weights-output ${{outputs.weights}} --tokenizer-output ${{outputs.tokenizer}} --config-output ${{outputs.config}}
