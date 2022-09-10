@@ -38,7 +38,7 @@ def tokenize_and_batch_datasets(tokenizer, raw_datasets, text_column_name):
     column_names = raw_datasets["train"].column_names
 
     def tokenize_function(examples):
-        return tokenizer(examples[text_column_name])
+        return tokenizer(examples[text_column_name], padding="max_length", max_length=128, truncation=True)
 
     tokenized_datasets = raw_datasets.map(
         tokenize_function,
@@ -116,8 +116,6 @@ def finetune(weights_path: str, tokenizer_path: str, config_path: str,
         args=training_args,
         train_dataset=train_dataset,
         eval_dataset=eval_dataset,
-        data_collator=default_data_collator,
-        compute_metrics=compute_metrics
     )
 
     history = trainer.train()
