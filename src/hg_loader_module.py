@@ -29,7 +29,7 @@ class HuggingFaceClassifierModel:
         data['rating'] = classes
         data['confidence'] = confidence
 
-        results = data[['index', 'hate', 'confidence']].groupby('index').agg({'hate': pd.Series.mode, 'confidence': 'mean' })
+        results = data[['index', 'rating', 'confidence']].groupby('index').agg({'rating': pd.Series.mode, 'confidence': 'mean' })
 
         return results
 
