@@ -1,6 +1,6 @@
 name: finetuning_classifier_base
 display_name: Finetune HuggingFace Classifier
-version: 3
+version: 4
 type: command
 description: Finetune a HuggingFace Classifier.
 tags: { category: HuggingFace, type: Classifier }
@@ -53,7 +53,7 @@ outputs:
   config:
     type: uri_folder
   model:
-    type: uri_folder
+    type: mlflow_model
 code: .
 environment: azureml:base-hf-transformer-trainer:1
 command: >-

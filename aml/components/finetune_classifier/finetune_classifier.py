@@ -1,6 +1,7 @@
 import logging
 import mlflow
 import os
+import tempfile
 import numpy as np
 from mlflow.models.signature import ModelSignature
 from mlflow.types.schema import Schema, ColSpec
@@ -133,9 +134,10 @@ def finetune(weights_path: str, tokenizer_path: str, train_path: str,
 
     if log_model:
         logging.info('[DEBUG] Logging MLflow model')
+        temp_dir = tempfile.TemporaryDirectory()
         
-        tokenizer.save_pretrained(model_output)
-        model.save_pretrained(model_output)
+        tokenizer.save_pretrained(temp_dir)
+        model.save_pretrained(temp_dir)
 
         signature = ModelSignature(
             inputs=Schema([
@@ -147,7 +149,7 @@ def finetune(weights_path: str, tokenizer_path: str, train_path: str,
             ]))
 
         mlflow.pyfunc.log_model('model', 
-                                data_path=model_output,
+                                data_path=temp_dir,
                                 code_path=["./hg_loader_module.py"], 
                                 loader_module="hg_loader_module", 
                                 signature=signature)

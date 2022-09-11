@@ -1,6 +1,6 @@
 name: finetuning_classifier_acpt
 display_name: Finetune HuggingFace Classifier (DeepSpeed)
-version: 3
+version: 4
 type: command
 description: Finetune a HuggingFace Classifier with acceleration support.
 tags: { category: HuggingFace, type: Classifier }
@@ -65,7 +65,7 @@ outputs:
   config:
     type: uri_folder
   model:
-    type: uri_folder
+    type: mlflow_model
 code: .
 environment: azureml:acpt-hf-transformer-trainer:1
 distribution:
