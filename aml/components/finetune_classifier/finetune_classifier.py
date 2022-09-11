@@ -88,7 +88,8 @@ def finetune(weights_path: str, tokenizer_path: str, config_path: str,
         'report_to': 'none',
         'num_train_epochs': num_train_epochs,
         "per_device_train_batch_size" : batch_size,
-        "evaluation_strategy": "epoch",
+        "evaluation_strategy": "steps",
+        "eval_steps": 500
     }
 
     log_model = True
