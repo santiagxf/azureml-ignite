@@ -1,6 +1,6 @@
 name: split_sentences
 display_name: Split sentences
-version: 1
+version: 2
 type: command
 description: Splits long sequences of text into shorter ones so they can be processed by models with lenght restrictions. Sentences are split in subsequences of no more than the maximum number of words indicated. You can also indicate an amount of words to keep on each subsequence as a rolling window fashion.
 tags: {category: NLP, type: Processing}
@@ -26,10 +26,10 @@ outputs:
 code: split_sentences.py
 environment: azureml:base-hf-transformer-trainer:1
 command: >-
-  jobtools split_sentences.py split_sentences
+  jobtools split_sentences.py preprocess
   --input-dataset ${{inputs.input_dataset}}
   --text-column-name ${{inputs.text_column_name}}
   --split-sentences ${{inputs.split_sentences}}
-  --max_words-sentence ${{inputs.max_words_sentence}}
+  --max-words-sentence ${{inputs.max_words_sentence}}
   --words-carry-on ${{inputs.words_carry_on}}
   --output-dataset ${{outputs.output_dataset}}

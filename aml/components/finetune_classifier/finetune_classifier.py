@@ -80,6 +80,7 @@ def finetune(weights_path: str, tokenizer_path: str, train_path: str,
     else:
         logging.info("[DEBUG] Loading model for sequence classification")
         model = AutoModelForSequenceClassification.from_pretrained(weights_path, num_labels=num_labels)
+        config = model.config
     
     model.config.pad_token_id = model.config.eos_token_id
     model.resize_token_embeddings(len(tokenizer))
@@ -93,8 +94,8 @@ def finetune(weights_path: str, tokenizer_path: str, train_path: str,
         'logging_dir': './logs', 
         'report_to': 'none',
         'num_train_epochs': num_train_epochs,
-        "per_device_train_batch_size" : batch_size,
-        "evaluation_strategy": eval_strategy,
+#        "per_device_train_batch_size" : batch_size,
+#        "evaluation_strategy": eval_strategy,
     }
 
     log_model = True
@@ -116,7 +117,7 @@ def finetune(weights_path: str, tokenizer_path: str, train_path: str,
         args=training_args,
         train_dataset=train_dataset,
         eval_dataset=eval_dataset,
-        compute_metrics=compute_metrics
+#        compute_metrics=compute_metrics
     )
 
     history = trainer.train()
@@ -131,6 +132,7 @@ def finetune(weights_path: str, tokenizer_path: str, train_path: str,
 
     if log_model:
         logging.info('[DEBUG] Logging MLflow model')
+        
         tokenizer.save_pretrained(model_output)
         model.save_pretrained(model_output)
 
