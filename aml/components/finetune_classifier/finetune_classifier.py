@@ -7,7 +7,7 @@ from mlflow.types.schema import Schema, ColSpec
 from mlflow.types import DataType
 from datasets.arrow_dataset import Dataset, Features, Value
 from datasets import load_metric
-from transformers import AutoConfig, AutoTokenizer, AutoModelForSequenceClassification
+from transformers import AutoConfig, AutoTokenizer, AutoModel, AutoModelForSequenceClassification
 from transformers import Trainer, TrainingArguments, default_data_collator
 
 eval_metric = load_metric('accuracy')
@@ -56,7 +56,7 @@ def compute_metrics(eval_pred):
 def finetune(weights_path: str, tokenizer_path: str, config_path: str, 
              train_path: str, validation_path: str, 
              text_column_name: str, label_column_name: str, num_labels: int,
-             batch_size: int, num_train_epochs: int, model_output: str,
+             batch_size: int, num_train_epochs: int, eval_strategy: str, model_output: str,
              weights_output: str, tokenizer_output: str, config_output: str,
              ort: bool = False, fp16: bool = False, deepspeed: bool = False):
 
@@ -67,14 +67,20 @@ def finetune(weights_path: str, tokenizer_path: str, config_path: str,
     logging.info("[DEBUG] Reading datasets from inputs")
     raw_datasets = load_raw_dataset(train_path, validation_path, text_column_name, label_column_name)
 
-    logging.info("[DEBUG] Loading base model, config and tokenizer")
-    #config = AutoConfig.from_pretrained(config_path)
-    #config.num_labels = num_labels
-
+    logging.info("[DEBUG] Loading tokenizer")
     tokenizer = AutoTokenizer.from_pretrained(tokenizer_path)
     tokenizer.pad_token = tokenizer.eos_token
 
-    model = AutoModelForSequenceClassification.from_pretrained(weights_path, num_labels=num_labels)
+    logging.ingo("[DEBUG] Loading base model")
+    if config_path:
+        logging.ingo("[DEBUG] Loading model with provided configuration")
+        config = AutoConfig.from_pretrained(config_path)
+        config.num_labels = num_labels
+        model = AutoModel.from_pretrained(weights_path, config=config)
+    else:
+        logging.ingo("[DEBUG] Loading model for sequence classification")
+        model = AutoModelForSequenceClassification.from_pretrained(weights_path, num_labels=num_labels)
+    
     model.config.pad_token_id = model.config.eos_token_id
     model.resize_token_embeddings(len(tokenizer))
 
@@ -88,8 +94,7 @@ def finetune(weights_path: str, tokenizer_path: str, config_path: str,
         'report_to': 'none',
         'num_train_epochs': num_train_epochs,
         "per_device_train_batch_size" : batch_size,
-        "evaluation_strategy": "steps",
-        "eval_steps": 500
+        "evaluation_strategy": eval_strategy,
     }
 
     log_model = True
