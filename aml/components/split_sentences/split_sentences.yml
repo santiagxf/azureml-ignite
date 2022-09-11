@@ -20,11 +20,10 @@ inputs:
   words_carry_on:
     type: integer
     description: Helps keep the context while spliting sentences by idicates the number of words you want to carry on from the previous subsequence.
-
 outputs:
   output_dataset:
     type: uri_folder
-code: preprocess_text.py
+code: split_sentences.py
 environment: azureml:base-hf-transformer-trainer:1
 command: >-
   jobtools split_sentences.py split_sentences
