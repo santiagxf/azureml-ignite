@@ -40,8 +40,8 @@ def split_to_sequences(text: str, unique_words, seq_len) -> List[str]:
     seqs = [' '.join(words[seq*unique_words:seq*unique_words + seq_len]) for seq in range(n_seq)]
     return seqs
 
-def preprocess(input_dataset: str, text_column_name:str, split_sentences: bool, 
-               unique_words: int, max_sentence_len: int, output_dataset:str):
+def split_sentences(input_dataset: str, text_column_name:str, split_sentences: bool, 
+                    max_words_sentence: int, words_carry_on: int, output_dataset:str):
 
     if os.path.isdir(input_dataset):
         input_dataset = os.path.join(input_dataset, "*.csv")
@@ -55,8 +55,8 @@ def preprocess(input_dataset: str, text_column_name:str, split_sentences: bool,
     df = pd.concat(map(pd.read_csv, glob.glob(input_dataset)))
     if split_sentences:
         df.loc[:,text_column_name] = df[text_column_name].apply(split_to_sequences,
-                                            unique_words=unique_words,
-                                            seq_len=max_sentence_len).explode(text_column_name).reset_index(drop=True)
+                                            unique_words=(max_words_sentence - words_carry_on),
+                                            seq_len=max_words_sentence).explode(text_column_name).reset_index(drop=True)
 
     
     df.to_csv(os.path.join(output_dataset, "data.csv"), index=False)

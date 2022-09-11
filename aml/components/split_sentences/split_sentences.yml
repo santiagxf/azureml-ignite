@@ -1,8 +1,8 @@
-name: preprocess_text
-display_name: Preprocess text
+name: split_sentences
+display_name: Split sentences
 version: 1
 type: command
-description: Generic text processor for downstream NLP tasks
+description: Splits long sequences of text into shorter ones so they can be processed by models with lenght restrictions. Sentences are split in subsequences of no more than the maximum number of words indicated. You can also indicate an amount of words to keep on each subsequence as a rolling window fashion.
 tags: {category: NLP, type: Processing}
 inputs:
   input_dataset: 
@@ -14,22 +14,23 @@ inputs:
   split_sentences:
     type: boolean
     description: Indicates if sentenses should be split.
-  unique_words:
+  max_words_sentence:
     type: integer
     description: Indicates the max number of words on each sentence.
-  max_sentence_len:
+  words_carry_on:
     type: integer
-    description: Indicates the max number of words on each sentence.
+    description: Helps keep the context while spliting sentences by idicates the number of words you want to carry on from the previous subsequence.
+
 outputs:
   output_dataset:
     type: uri_folder
 code: preprocess_text.py
 environment: azureml:base-hf-transformer-trainer:1
 command: >-
-  jobtools preprocess_text.py preprocess
+  jobtools split_sentences.py split_sentences
   --input-dataset ${{inputs.input_dataset}}
   --text-column-name ${{inputs.text_column_name}}
   --split-sentences ${{inputs.split_sentences}}
-  --unique-words ${{inputs.unique_words}}
-  --max-sentence-len ${{inputs.max_sentence_len}}
+  --max_words-sentence ${{inputs.max_words_sentence}}
+  --words-carry-on ${{inputs.words_carry_on}}
   --output-dataset ${{outputs.output_dataset}}
