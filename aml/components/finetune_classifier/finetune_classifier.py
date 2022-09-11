@@ -33,16 +33,12 @@ def load_raw_dataset(train_path, validation_path, text_column_name,
 
 
 def tokenize_and_batch_datasets(tokenizer, raw_datasets, text_column_name):
-#    column_names = raw_datasets["train"].column_names
-
     def tokenize_function(examples):
         return tokenizer(examples[text_column_name], padding="max_length", max_length=128, truncation=True)
 
     tokenized_datasets = raw_datasets.map(
         tokenize_function,
         batched=True,
-#        remove_columns=column_names,
-#        desc="Running tokenizer on dataset",
     )
 
     train_dataset = tokenized_datasets["train"]
@@ -91,8 +87,8 @@ def finetune(weights_path: str, tokenizer_path: str, config_path: str,
         'logging_dir': './logs', 
         'report_to': 'none',
         'num_train_epochs': num_train_epochs,
-#        "per_device_train_batch_size" : batch_size,
-#        "evaluation_strategy": "epoch",
+        "per_device_train_batch_size" : batch_size,
+        "evaluation_strategy": "epoch",
     }
 
     log_model = True
@@ -114,7 +110,7 @@ def finetune(weights_path: str, tokenizer_path: str, config_path: str,
         args=training_args,
         train_dataset=train_dataset,
         eval_dataset=eval_dataset,
-#        compute_metrics=compute_metrics
+        compute_metrics=compute_metrics
     )
 
     history = trainer.train()
