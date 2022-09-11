@@ -71,7 +71,7 @@ def finetune(weights_path: str, tokenizer_path: str, config_path: str,
     tokenizer = AutoTokenizer.from_pretrained(tokenizer_path)
     tokenizer.pad_token = tokenizer.eos_token
 
-    logging.ingo("[DEBUG] Loading base model")
+    logging.info("[DEBUG] Loading base model")
     if config_path:
         logging.ingo("[DEBUG] Loading model with provided configuration")
         config = AutoConfig.from_pretrained(config_path)
