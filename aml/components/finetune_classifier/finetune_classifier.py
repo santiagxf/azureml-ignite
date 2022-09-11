@@ -72,8 +72,8 @@ def finetune(weights_path: str, tokenizer_path: str, config_path: str,
     raw_datasets = load_raw_dataset(train_path, validation_path, text_column_name, label_column_name)
 
     logging.info("[DEBUG] Loading base model, config and tokenizer")
-    config = AutoConfig.from_pretrained(config_path)
-    config.num_labels = num_labels
+    #config = AutoConfig.from_pretrained(config_path)
+    #config.num_labels = num_labels
 
     tokenizer = AutoTokenizer.from_pretrained(tokenizer_path)
     tokenizer.pad_token = tokenizer.eos_token
