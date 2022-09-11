@@ -73,12 +73,12 @@ def finetune(weights_path: str, tokenizer_path: str, config_path: str,
 
     logging.info("[DEBUG] Loading base model")
     if config_path:
-        logging.ingo("[DEBUG] Loading model with provided configuration")
+        logging.info("[DEBUG] Loading model with provided configuration")
         config = AutoConfig.from_pretrained(config_path)
         config.num_labels = num_labels
         model = AutoModel.from_pretrained(weights_path, config=config)
     else:
-        logging.ingo("[DEBUG] Loading model for sequence classification")
+        logging.info("[DEBUG] Loading model for sequence classification")
         model = AutoModelForSequenceClassification.from_pretrained(weights_path, num_labels=num_labels)
     
     model.config.pad_token_id = model.config.eos_token_id
