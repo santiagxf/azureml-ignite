@@ -53,11 +53,11 @@ def compute_metrics(eval_pred):
     return eval_metric.compute(predictions=predictions, references=labels)
 
 
-def finetune(weights_path: str, tokenizer_path: str, config_path: str, 
-             train_path: str, validation_path: str, 
+def finetune(weights_path: str, tokenizer_path: str, train_path: str,
              text_column_name: str, label_column_name: str, num_labels: int,
              batch_size: int, num_train_epochs: int, eval_strategy: str, model_output: str,
              weights_output: str, tokenizer_output: str, config_output: str,
+             config_path: str = None, validation_path: str = None, 
              ort: bool = False, fp16: bool = False, deepspeed: bool = False):
 
     if validation_path == None:
