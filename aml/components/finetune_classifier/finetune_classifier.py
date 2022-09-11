@@ -16,10 +16,8 @@ def load_raw_dataset(train_path, validation_path, text_column_name,
                      label_column_name, cache_dir=".cache"):
 
     if os.path.isdir(train_path):
-        print('is path')
         train_path = os.path.join(train_path, "*.csv")
     if os.path.isdir(validation_path):
-        print('is path')
         validation_path = os.path.join(validation_path, "*.csv")
 
     data_files = {}
@@ -80,7 +78,7 @@ def finetune(weights_path: str, tokenizer_path: str, config_path: str,
     tokenizer = AutoTokenizer.from_pretrained(tokenizer_path)
     tokenizer.pad_token = tokenizer.eos_token
 
-    model = AutoModelForSequenceClassification.from_pretrained(weights_path, config=config)
+    model = AutoModelForSequenceClassification.from_pretrained(weights_path, num_labels=num_labels)
     model.config.pad_token_id = model.config.eos_token_id
     model.resize_token_embeddings(len(tokenizer))
 
