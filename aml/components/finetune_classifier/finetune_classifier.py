@@ -94,8 +94,8 @@ def finetune(weights_path: str, tokenizer_path: str, train_path: str,
         'logging_dir': './logs', 
         'report_to': 'none',
         'num_train_epochs': num_train_epochs,
-#        "per_device_train_batch_size" : batch_size,
-#        "evaluation_strategy": eval_strategy,
+        "per_device_train_batch_size" : batch_size,
+        "evaluation_strategy": eval_strategy,
     }
 
     log_model = True
@@ -108,7 +108,8 @@ def finetune(weights_path: str, tokenizer_path: str, train_path: str,
         training_args_dict["deepspeed"] = "ds_config_zero_1.json"
         if 'RANK' in os.environ.keys():
             rank = os.environ['RANK']
-            log_model = rank == 0
+            log_model = int(rank) == 0
+            print(f"[DEBUG] RANK = {rank}. Log_model = {log_model}")
             logging.info(f"[DEBUG] RANK = {rank}")
 
     training_args = TrainingArguments(**training_args_dict)
@@ -117,7 +118,7 @@ def finetune(weights_path: str, tokenizer_path: str, train_path: str,
         args=training_args,
         train_dataset=train_dataset,
         eval_dataset=eval_dataset,
-#        compute_metrics=compute_metrics
+        compute_metrics=compute_metrics
     )
 
     history = trainer.train()

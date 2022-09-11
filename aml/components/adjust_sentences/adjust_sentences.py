@@ -40,8 +40,8 @@ def split_to_sequences(text: str, unique_words, seq_len) -> List[str]:
     seqs = [' '.join(words[seq*unique_words:seq*unique_words + seq_len]) for seq in range(n_seq)]
     return seqs
 
-def preprocess(input_dataset: str, text_column_name:str, split_sentences: bool, 
-               max_words_sentence: int, words_carry_on: int, output_dataset:str):
+def adjust_sentences(input_dataset: str, text_column_name:str, split_sentences: bool, 
+                     max_words_sentence: int, words_carry_on: int, output_dataset:str):
 
     if os.path.isdir(input_dataset):
         input_dataset = os.path.join(input_dataset, "*.csv")
