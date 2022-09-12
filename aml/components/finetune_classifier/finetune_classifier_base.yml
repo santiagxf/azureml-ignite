@@ -1,6 +1,6 @@
 name: finetuning_classifier_base
 display_name: Finetune HuggingFace Classifier
-version: 4
+version: 5
 type: command
 description: Finetune a HuggingFace Classifier.
 tags: { category: HuggingFace, type: Classifier }

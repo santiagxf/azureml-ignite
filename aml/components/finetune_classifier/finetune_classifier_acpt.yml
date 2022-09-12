@@ -1,6 +1,6 @@
 name: finetuning_classifier_acpt
 display_name: Finetune HuggingFace Classifier (DeepSpeed)
-version: 4
+version: 5
 type: command
 description: Finetune a HuggingFace Classifier with acceleration support.
 tags: { category: HuggingFace, type: Classifier }

@@ -134,7 +134,7 @@ def finetune(weights_path: str, tokenizer_path: str, train_path: str,
 
     if log_model:
         logging.info('[DEBUG] Logging MLflow model')
-        temp_dir = tempfile.TemporaryDirectory()
+        temp_dir = tempfile.mkdtemp()
         
         tokenizer.save_pretrained(temp_dir)
         model.save_pretrained(temp_dir)
