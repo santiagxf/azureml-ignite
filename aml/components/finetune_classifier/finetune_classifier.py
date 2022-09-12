@@ -6,6 +6,7 @@ import numpy as np
 from mlflow.models.signature import ModelSignature
 from mlflow.types.schema import Schema, ColSpec
 from mlflow.types import DataType
+from mlflow.utils.environment import _mlflow_conda_env
 from datasets.arrow_dataset import Dataset, Features, Value
 from datasets import load_metric
 from transformers import AutoConfig, AutoTokenizer, AutoModel, AutoModelForSequenceClassification
@@ -148,8 +149,15 @@ def finetune(weights_path: str, tokenizer_path: str, train_path: str,
                 ColSpec(DataType.double, "confidence"),
             ]))
 
+        transformers_env =_mlflow_conda_env(
+            additional_conda_deps=None,
+            additional_pip_deps=["torch==1.11.0", "transformers==4.11"],
+            additional_conda_channels=None,
+        )
+
         mlflow.pyfunc.log_model('model', 
                                 data_path=temp_dir,
                                 code_path=["./hg_loader_module.py"], 
                                 loader_module="hg_loader_module", 
+                                conda_env=transformers_env,
                                 signature=signature)
