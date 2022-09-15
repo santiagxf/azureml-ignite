@@ -83,7 +83,7 @@ outputs:
   config:
     type: uri_folder
 code: .
-environment: azureml:registries/IgniteContoso/environments/actp-hf-transformer-trainer/versions/1
+environment: azureml://registries/IgniteContoso/environments/actp-hf-transformer-trainer/versions/1
 distribution:
   type: pytorch
   process_count_per_instance: 4
