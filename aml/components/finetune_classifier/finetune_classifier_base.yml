@@ -1,11 +1,11 @@
 name: finetuning_classifier_base
 display_name: Finetune HuggingFace Classifier
-version: 8
+version: 9
 type: command
 description: |-
   **Finetune HuggingFace Classifier**:
 
-  Allows to get a given HuggingFace base model and use it as the base model to construct a text classification model. There are significant benefits to using a pretrained model. It reduces computation costs, your carbon footprint, and allows you to use state-of-the-art models without having to train one from scratch.
+  Allows to get a given HuggingFace base model and use it as the base model to construct a text classification model. There are significant benefits to using a pretrained model. It reduces computation costs, your carbon footprint, and allows you to use state-of-the-art NLP models without having to train one from scratch.
 
   When you use a pretrained model, you train it on a dataset specific to your task. This is known as fine-tuning, an incredibly powerful training technique.
 
