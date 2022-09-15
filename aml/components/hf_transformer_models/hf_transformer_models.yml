@@ -17,7 +17,7 @@ outputs:
   config:
     type: uri_folder
 code: huggingface.py
-environment: azureml:base-hf-transformer-trainer:1
+environment: azureml://registries/IgniteContoso/environments/base-hf-transformer-trainer/versions/1
 command: >-
   jobtools huggingface.py get_model 
     --model-name ${{inputs.model_name}} 
