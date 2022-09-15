@@ -2,7 +2,27 @@ name: finetuning_classifier_acpt
 display_name: Finetune HuggingFace Classifier (DeepSpeed)
 version: 8
 type: command
-description: Finetune a HuggingFace Classifier with acceleration support.
+description:  |-
+  **Finetune HuggingFace Classifier with acceleration support (DeepSpeed)**:
+
+  Allows to get a given HuggingFace base model and use it as the base model to construct a text classification model. There are significant benefits to using a pretrained model. It reduces computation costs, your carbon footprint, and allows you to use state-of-the-art models without having to train one from scratch.
+
+  When you use a pretrained model, you train it on a dataset specific to your task. This is known as fine-tuning, an incredibly powerful training technique. This module also support GPU acceleration using DeepSpeed.
+
+  To use this component you will need:
+  * `base_weights`: The base weights of the model.
+  * `base_tokenizer`: The base tokenizer used with you model.
+  * `base_config` (optional): The base configuration to use for you model. Only indicate this if you model is already a classification model that you want to fine tune further.
+  * `train_path`: The path where you training data is.
+  * `validation_path`: The path where your validation data is. If not indicated, we will use the training data.
+  * `text_column_name`: The name of the column in the dataset where the text data is placed.
+  * `label_column_name`: The name of the column in the dataset where the label to predict is placed.
+  * `num_labels`: The number of labels the classifier should be predicting.
+  * `batch_size` (optional): The batch size to use during training.
+  * `num_train_epochs` (optional): The number of epochs to train on.
+  * `eval_strategy` (opional): The evaluation strategy to use during training, if any.
+
+  The fine-tuned model can be used directly for inference if needed. It is also logged in MLflow format in the output named `classifier`. The model returns two columns `class` and `probabilities`.
 tags: { category: HuggingFace, type: Classifier }
 inputs:
   base_weights: 
@@ -13,7 +33,7 @@ inputs:
     description: Pretrained tokenizer name or path if not from model_name.
   base_config: 
     type: uri_folder
-    description: Pretrained GPT2 model configuration.
+    description: Pretrained model configuration.
     optional: true
   train_path: 
     type: uri_folder
@@ -25,11 +45,9 @@ inputs:
   text_column_name: 
     type: string
     description: Name of the column containing text.
-    default: text
   label_column_name: 
     type: string
     description: Name of the column containing text.
-    default: label
   num_labels: 
     type: integer
     description: Number of labels/classes in the target.
@@ -45,6 +63,10 @@ inputs:
     type: string
     description: Evaluation strategy
     enum: ['epoch','steps','no']
+  deepspeed: 
+    type: boolean
+    description: Use deepspeed.
+    default: true
   fp16: 
     type: boolean
     description: Use mixed precision.
@@ -52,11 +74,7 @@ inputs:
   ort: 
     type: boolean
     description: Use ORTModule.
-    default: true
-  deepspeed: 
-    type: boolean
-    description: Use deepspeed.
-    default: true
+    default: false
 outputs:
   weights:
     type: uri_folder

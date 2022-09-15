@@ -21,15 +21,15 @@ class HuggingFaceClassifierModel:
         probs = torch.nn.Softmax(dim=1)(predictions.logits)
         probs = probs.detach().numpy()
         
-        logging.info("[INFO] Building results with hate probabilities")
+        logging.info("[INFO] Building results with probabilities")
         classes = probs.argmax(axis=1)
         confidence = probs.max(axis=1)
 
         data = data.reset_index()
-        data['rating'] = classes
+        data['class'] = classes
         data['confidence'] = confidence
 
-        results = data[['index', 'rating', 'confidence']].groupby('index').agg({'rating': pd.Series.mode, 'confidence': 'mean' })
+        results = data[['index', 'class', 'confidence']].groupby('index').agg({'class': pd.Series.mode, 'confidence': 'mean' })
 
         return results
 
