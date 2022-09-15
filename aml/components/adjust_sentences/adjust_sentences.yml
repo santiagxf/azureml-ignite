@@ -36,7 +36,7 @@ outputs:
   output_dataset:
     type: uri_folder
 code: adjust_sentences.py
-environment: azureml:base-hf-transformer-trainer:1
+environment: azureml:registries/IgniteContoso/environments/base-hf-transformer-trainer/versions/1
 command: >-
   jobtools adjust_sentences.py adjust_sentences
   --input-dataset ${{inputs.input_dataset}}
